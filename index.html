@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Собери Торина в поход</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: url('t_bg.jpg') center/cover no-repeat fixed;
+    background-color: #2b2b2b;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  .page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+  .page.active { display: flex; }
+
+  .header-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 30px;
+    border-radius: 20px;
+  }
+
+  .game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .character {
+    width: 250px;
+    height: 250px;
+    background-image: url('t_character.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.7));
+  }
+
+  .shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(8px, 0, 0); }
+  }
+
+  .options {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .option {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));
+  }
+
+  .option:hover {
+    transform: scale(1.1) translateY(-5px);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)) brightness(1.2);
+  }
+
+  .final-text {
+    font-size: 18px;
+    line-height: 1.6;
+    white-space: pre-line;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid #ffd700;
+    max-width: 800px;
+    text-align: left;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+    margin-bottom: 20px;
+  }
+
+  .final-text h2 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 28px;
+  }
+
+  .music-btn {
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 100;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: rgba(0,0,0,.5);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+
+  max-width: 600px {
+    .header-title { font-size: 20px; }
+    .character { width: 200px; height: 200px; }
+    .option { width: 140px; height: 140px; }
+    .final-text { font-size: 15px; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ФОНОВАЯ МУЗЫКА (убрал ошибку с автозапуском) -->
+  <audio id="bgMusic" src="t_music.mp3" loop></audio>
+  <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🔇</button>
+
+  <!-- СТРАНИЦА 1 -->
+  <section class="page active" id="page1">
+    <div class="header-title">Собери Торина в поход: Шаг 1</div>
+    <div class="game-area">
+      <div class="character" id="char1"></div>
+      <div class="options">
+        <img src="t_item1_wrong.jpg" class="option" onclick="checkAnswer(false, 'char1')" alt="Неверно">
+        <img src="t_item1_rock.jpg" class="option" onclick="checkAnswer(true, 'char1', 'page2')" alt="Булыжник">
+      </div>
+    </div>
+  </section>
+
+  <!-- СТРАНИЦА 2 -->
+  <section class="page" id="page2">
+    <div class="header-title">Собери Торина в поход: Шаг 2</div>
+    <div class="game-area">
+      <div class="character" id="char2"></div>
+      <div class="options">
+
+
+<img src="t_item2_wrong.jpg" class="option" onclick="checkAnswer(false, 'char2')" alt="Неверно">
+        <img src="t_item2_sword.jpg" class="option" onclick="checkAnswer(true, 'char2', 'page3')" alt="Меч">
+      </div>
+    </div>
+  </section>
+
+  <!-- СТРАНИЦА 3 -->
+  <section class="page" id="page3">
+    <div class="header-title">Собери Торина в поход: Шаг 3</div>
+    <div class="game-area">
+      <div class="character" id="char3"></div>
+      <div class="options">
+        <img src="t_item3_wrong.jpg" class="option" onclick="checkAnswer(false, 'char3')" alt="Неверно">
+        <img src="t_item3_shirt.jpg" class="option" onclick="checkAnswer(true, 'char3', 'page4')" alt="Футболка">
+      </div>
+    </div>
+  </section>
+
+  <!-- СТРАНИЦА 4 (ФИНАЛ) -->
+  <section class="page" id="page4">
+    <div class="final-text">
+      <h2>С днем рождения Андрей!</h2>
+Как же быстро летит время. Вроде только вчера был школяром бомбящим на егэ, а сейчас уже гордый, но голодный студент первокурсник. Но все еще остался хорошим другом и отличным человеком, который всегда придет на помощь и поддержит.
+Я помню как мы с тобой играли и твой персонаж устраивал геноцид народа, экспереминтировал над живыми людьми, шел против закона мироздания, каждый день устраивал военные преступления и наконец постоянно ставил Валерия в неудобное положение, а мы над этим всем угарали. Ну что могу сказать, на такие добродетели может пойти только по истине хороший человек.
+Я еще могу расписать оду о тебе, но мне пора убирать кустарник на голове через подсечно-огневой метод у своего БОЛЬШОГО БРО, рядом как раз есть БЫТОВАЯ ХИМИЯ и ЛЕКАРСТВА, так что можешь найти меня там.
+И напоследок. Если кто-то тебя обидет, то просто вспомни мои слова: "--- -.  . -... .- -. ..- - -.-- .--- --..--  – .. .-.  . -... .- -. ..- - -.-- .--- --..--  - -.--  - --- ...- .  . -... .- -. ..- - -.-- .--- --..--  .--. --- - --- – ..-  ---. - ---  .--  - .-- --- . .---  --. --- .-.. --- .-- .  ... .. ...- ..-  . -..."
+    </div>
+  </section>
+
+<script>
+  // --- БЕЗОПАСНОЕ ВОСПРОИЗВЕДЕНИЕ ЗВУКА ---
+  function playSound(file) {
+    try {
+      const audio = new Audio(file);
+      audio.volume = 0.6;
+      audio.play().catch(e => console.log("Ошибка звука (файл не найден?):", file));
+    } catch(e) {
+      console.log("Сбой аудио:", e);
+    }
+  }
+
+  // --- МУЗЫКА ---
+  const bgMusic = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+
+  function toggleMusic() {
+    if (bgMusic.paused) {
+      bgMusic.volume = 0.2;
+      bgMusic.play().catch(e => console.log("Музыка не загружена"));
+      musicBtn.textContent = '🔊';
+    } else {
+      bgMusic.pause();
+      musicBtn.textContent = '🔇';
+    }
+  }
+
+  // --- ГЛАВНАЯ ЛОГИКА ---
+  function checkAnswer(isCorrect, charId, nextPageId) {
+    try {
+      if (isCorrect) {
+        playSound('t_sound_yes.mp3');
+        
+        // Ищем следующую страницу и переключаем
+        if (nextPageId) {
+          const allPages = document.querySelectorAll('.page');
+          for (let i = 0; i < allPages.length; i++) {
+            allPages[i].classList.remove('active');
+          }
+          
+          const targetPage = document.getElementById(nextPageId);
+          if (targetPage) {
+            targetPage.classList.add('active');
+          } else {
+            alert("ОШИБКА: Страница " + nextPageId + " не найдена в коде!");
+          }
+          
+          // Включаем победный звук
+          if (nextPageId === 'page4') {
+            playSound('t_sound_win.mp3');
+            bgMusic.pause();
+            musicBtn.textContent = '🔇';
+          }
+        }
+      } else {
+        playSound('t_sound_no.mp3');
+        const character = document.getElementById(charId);
+        if (character) {
+          character.classList.add('shake');
+          setTimeout(() => {
+            character.classList.remove('shake');
+          }, 500);
+        }
+      }
+    } catch (error) {
+      alert("Ошибка в коде: " + error.message);
+    }
+  }
+</script>
+
+
+</body>
+</html>
